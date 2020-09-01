@@ -29,6 +29,7 @@ const getPlayers = (() => {
         submitButton.addEventListener('click', function() {
             getName()
             createPlayer()
+            document.getElementById('p').textContent = `${player1.name}`
             if (name1 !== '' && name2 !== '') {
                 resetForm()
             }
@@ -61,24 +62,32 @@ const playGame = (() => {
 
     getPlayers.submitPlayer()
 
+    let p = document.getElementById('p')
+
     let turn = 0;
 
     const play = () => {
         main.addEventListener('click', (e) => {
-            let id = e.target.id;
-            playRound(id);
-            displayMark(id);
+            if (turn >= 0 || turn < 9) {
+                let id = e.target.id;
+                playRound(id);
+                displayMark(id);
+                getWinner();
+                resetBoard()
+            } 
         })
     }
 
     const playRound = (id) => {
-        if (player1.name !== '' && player2.name !== '') {
+        if (player1.name !== '' && player2.name !== '' && turn < 9) {
             if (turn % 2 === 0 && gameBoard[id] === null) {
                 gameBoard.splice(id, 1, player1.mark);
+                p.textContent = `${player2.name}`
                 turn++;
             } 
-            if (turn % 2 !== 0 && gameBoard[id] === null) {
+            if (turn % 2 !== 0 && gameBoard[id] === null && turn < 9) {
                 gameBoard.splice(id, 1, player2.mark);
+                p.textContent = `${player1.name}`
                 turn++;
             }
         }
@@ -89,7 +98,49 @@ const playGame = (() => {
         let cell = document.getElementById(id);
         cell.textContent = gameBoard[id];
     }
-    
+
+    const getWinner = () => {
+        if ((gameBoard[0] === 'X' && gameBoard[1] ==='X' && gameBoard[2] === 'X') ||
+            (gameBoard[3] === 'X' && gameBoard[4] ==='X' && gameBoard[5] === 'X') ||
+            (gameBoard[6] === 'X' && gameBoard[7] ==='X' && gameBoard[8] === 'X') ||
+            (gameBoard[0] === 'X' && gameBoard[3] ==='X' && gameBoard[6] === 'X') ||
+            (gameBoard[1] === 'X' && gameBoard[4] ==='X' && gameBoard[7] === 'X') ||
+            (gameBoard[2] === 'X' && gameBoard[5] ==='X' && gameBoard[8] === 'X') ||
+            (gameBoard[0] === 'X' && gameBoard[4] ==='X' && gameBoard[8] === 'X') ||
+            (gameBoard[2] === 'X' && gameBoard[4] ==='X' && gameBoard[6] === 'X')) {
+                p.textContent = `${player1.name} wins!`
+                turn = 10
+        } else if ((gameBoard[0] === 'O' && gameBoard[1] ==='O' && gameBoard[2] === 'O') ||
+                   (gameBoard[3] === 'O' && gameBoard[4] ==='O' && gameBoard[5] === 'O') ||
+                   (gameBoard[6] === 'O' && gameBoard[7] ==='O' && gameBoard[8] === 'O') ||
+                   (gameBoard[0] === 'O' && gameBoard[3] ==='O' && gameBoard[6] === 'O') ||
+                   (gameBoard[1] === 'O' && gameBoard[4] ==='O' && gameBoard[7] === 'O') ||
+                   (gameBoard[2] === 'O' && gameBoard[5] ==='O' && gameBoard[8] === 'O') ||
+                   (gameBoard[0] === 'O' && gameBoard[4] ==='O' && gameBoard[8] === 'O') ||
+                   (gameBoard[2] === 'O' && gameBoard[4] ==='O' && gameBoard[6] === 'O')) {
+                        p.textContent = `${player2.name} wins!`
+                        turn = 10
+    } else if (turn === 9) {
+        p.textContent = `It's a draw!`
+    }
+
+    }
+
+    const resetBoard = () => {
+        let resetButton = document.getElementById('reset');
+        resetButton.addEventListener('click', () => {
+            for (let i = 0; i < 9; i++) {
+                let id = document.getElementById(i)
+                main.removeChild(id)
+            }
+            createGameBoard.displayGameBoard();
+            createGameBoard.createdArray();
+            p.textContent = `${player1.name}`
+            turn = 0
+        })
+        
+    }
+
     return {play}
 })()
 
