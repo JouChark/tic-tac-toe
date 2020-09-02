@@ -83,10 +83,10 @@ const playGame = (() => {
         newGame.addEventListener('click', () => {
             if (form.className === 'hiddenForm') {
                 form.className = 'showForm'
-                p.style.display = 'none'
+                p.style.color = 'rgba(0, 0, 0, 0.2)'
             } else {
                 getPlayers.changeName()
-                p.style.display = 'inherit'
+                p.style.color = '#000'
                 form.className = 'hiddenForm'
                 p.textContent = `${player1.name} starts!`
             }
@@ -199,6 +199,8 @@ const playGame = (() => {
 
     window.onload = () => {
             document.getElementById('form').reset()
+            document.getElementById('form').className = 'showForm'
+            p.style.color = 'rgba(0, 0, 0, 0.2)'
     }
 
     return {play}

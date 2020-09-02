@@ -7,10 +7,18 @@
     background-color: none;
 }
 
+header {
+    background-color: #626cf3;
+}
+
 header, #form {
-    margin: 15px;
-    text-align: center;
+    padding: 10px;
     justify-content: center;
+}
+
+h1 {
+    color: #33eeee;
+    font-size: 2.2em;
 }
 
 h1, h2 {
@@ -24,8 +32,15 @@ h2 {
 #form {
     position: fixed;
     z-index: 2;
-    top: 15%;
-    left: 29.23%;
+    left: 30.1%;
+    top: 17.5%;
+}
+
+@-moz-document url-prefix() {
+    #form {
+        left: 29.23%;
+        top: 19%;
+    }
 }
 
 #playerName {
@@ -46,9 +61,21 @@ h2 {
     margin: 15px;
 }
 
+#form input, #form select {
+    height: 33px;
+}
+
+#form input {
+    width: 233px;
+}
+
+#form select {
+    width: 100px;
+}
+
 #result {
     min-height: 30px;
-    margin-top: 30px;
+    margin: 40px;
     font-size: 22px;
 }
 
@@ -61,7 +88,7 @@ body {
     grid-template-rows: repeat(3, 1fr);
     font-family: sans-serif;
     text-align: center;
-    margin: 70px auto 85px auto;
+    margin: 50px auto;
     line-height: 98px;
     font-size: 3em;
     display: grid;
