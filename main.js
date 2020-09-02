@@ -1,12 +1,12 @@
 const createGameBoard = (() => {
 
-    const createdArray = () => {
+    function createdArray() {
         gameBoard = [null, null, null,
                      null, null, null,
                      null, null, null]
     } 
 
-    const displayGameBoard = () => {
+    function displayGameBoard() {
         const main = document.getElementById('main')
         for (let i = 0; i < 9; i++) {
             const div = document.createElement('div');
@@ -24,35 +24,27 @@ const getPlayers = (() => {
         return {name, mark, win}
     }
 
-    const submitPlayer = () => {
-        const submitButton = document.getElementById('submit');
-        submitButton.addEventListener('click', function() {
-            getName()
-            createPlayer()
-            document.getElementById('p').textContent = `${player1.name}`
-            if (name1 !== '' && name2 !== '') {
-                resetForm()
-            }
-            return false
-        })
+    function players() {
+        createPlayers()
     }
 
-    const createPlayer = () => {
-        player1 = player(name1, 'X', false)
-        player2 = player(name2, 'O', false) 
+    function createPlayers() {
+        player1 = player('Player 1', 'X', false)
+        player2 = player('Player 2', 'O', false) 
     }
     
-    const getName = () => {
-        name1 = document.getElementById('player1').value
-        name2 = document.getElementById('player2').value
+    function changeName() {
+        player1.name = document.getElementById('player1').value
+        player2.name = document.getElementById('player2').value
+        if (player1.name === '') {
+            player1.name = 'Player 1'
+        }
+        if (player2.name === '') {
+            player2.name = 'Player 2'
+        }
     }
-    
 
-    function resetForm() {
-        document.getElementById('form').reset()
-    }
-
-    return {submitPlayer}
+    return {players, changeName}
 })();
 
 const playGame = (() => {
@@ -60,46 +52,98 @@ const playGame = (() => {
     createGameBoard.displayGameBoard();
     createGameBoard.createdArray();
 
-    getPlayers.submitPlayer()
+    getPlayers.players()
 
     let p = document.getElementById('p')
 
     let turn = 0;
 
-    const play = () => {
-        main.addEventListener('click', (e) => {
-            if (turn >= 0 || turn < 9) {
+    function play() {
+        createNewGame()
+        restartGame()
+        if (turn < 9) {
+            main.addEventListener('click', (e) => {
                 let id = e.target.id;
                 playRound(id);
                 displayMark(id);
                 getWinner();
-                resetBoard()
-            } 
+        })
+        }    
+    }
+
+    function createNewGame() {
+        changeForm()
+        changeInputText()
+        changePlayerMode()
+    }
+
+    function changeForm() {
+        const newGame = document.getElementById('newGame')
+        const form = document.getElementById('form')
+        newGame.addEventListener('click', () => {
+            if (form.className === 'hiddenForm') {
+                form.className = 'showForm'
+                p.style.display = 'none'
+            } else {
+                getPlayers.changeName()
+                p.style.display = 'inherit'
+                form.className = 'hiddenForm'
+                p.textContent = `${player1.name} starts!`
+            }
         })
     }
 
-    const playRound = (id) => {
-        if (player1.name !== '' && player2.name !== '' && turn < 9) {
+    function changePlayerMode() {
+        const playerMode = document.getElementById('playerMode')
+        playerMode.addEventListener('change', () => {
+            resetBoard()
+            getPlayers.changeName()
+        })
+    }
+
+    function changeInputText() {
+        const placeholderText = document.getElementById('player2')
+        const playerMode = document.getElementById('playerMode')
+        playerMode.addEventListener('change', function() {
+            if(this.value === '1') {
+                placeholderText.placeholder = 'IA'
+                placeholderText.value = 'IA'
+            } else if (this.value === '2') {
+                placeholderText.placeholder = 'Player 2'
+            }
+        })
+    }
+
+    function playRound (id) {
+        if (!player1.win && turn < 10) {
+            document.getElementById('form').className = 'hiddenForm'
             if (turn % 2 === 0 && gameBoard[id] === null) {
                 gameBoard.splice(id, 1, player1.mark);
-                p.textContent = `${player2.name}`
                 turn++;
             } 
-            if (turn % 2 !== 0 && gameBoard[id] === null && turn < 9) {
+            if (turn % 2 !== 0 && gameBoard[id] === null) {
                 gameBoard.splice(id, 1, player2.mark);
-                p.textContent = `${player1.name}`
+                turn++;
+            }
+        } else if (player1 && turn < 10) {
+            if (turn % 2 !== 0 && gameBoard[id] === null) {
+                gameBoard.splice(id, 1, player1.mark);
+                turn++;
+            } 
+            if (turn % 2 === 0 && gameBoard[id] === null) {
+                gameBoard.splice(id, 1, player2.mark);
                 turn++;
             }
         }
         
     }
 
-    const displayMark = (id) => {
+    function displayMark(id) {
         let cell = document.getElementById(id);
         cell.textContent = gameBoard[id];
     }
 
-    const getWinner = () => {
+    function getWinner() {
         if ((gameBoard[0] === 'X' && gameBoard[1] ==='X' && gameBoard[2] === 'X') ||
             (gameBoard[3] === 'X' && gameBoard[4] ==='X' && gameBoard[5] === 'X') ||
             (gameBoard[6] === 'X' && gameBoard[7] ==='X' && gameBoard[8] === 'X') ||
@@ -109,6 +153,7 @@ const playGame = (() => {
             (gameBoard[0] === 'X' && gameBoard[4] ==='X' && gameBoard[8] === 'X') ||
             (gameBoard[2] === 'X' && gameBoard[4] ==='X' && gameBoard[6] === 'X')) {
                 p.textContent = `${player1.name} wins!`
+                player1.win = true
                 turn = 10
         } else if ((gameBoard[0] === 'O' && gameBoard[1] ==='O' && gameBoard[2] === 'O') ||
                    (gameBoard[3] === 'O' && gameBoard[4] ==='O' && gameBoard[5] === 'O') ||
@@ -119,26 +164,41 @@ const playGame = (() => {
                    (gameBoard[0] === 'O' && gameBoard[4] ==='O' && gameBoard[8] === 'O') ||
                    (gameBoard[2] === 'O' && gameBoard[4] ==='O' && gameBoard[6] === 'O')) {
                         p.textContent = `${player2.name} wins!`
+                        player1.win = false
                         turn = 10
-    } else if (turn === 9) {
-        p.textContent = `It's a draw!`
+        } else if (turn === 9) {
+            p.textContent = `It's a draw!`
+        }
     }
 
+    function restartGame() {
+        let restart = document.getElementById('restart');
+        restart.addEventListener('click', () => {  
+            resetBoard()
+            changeTextContent()
+        }) 
     }
 
-    const resetBoard = () => {
-        let resetButton = document.getElementById('reset');
-        resetButton.addEventListener('click', () => {
-            for (let i = 0; i < 9; i++) {
-                let id = document.getElementById(i)
-                main.removeChild(id)
-            }
-            createGameBoard.displayGameBoard();
-            createGameBoard.createdArray();
-            p.textContent = `${player1.name}`
-            turn = 0
-        })
-        
+    function resetBoard() {
+        for (let i = 0; i < 9; i++) {
+            let id = document.getElementById(i)
+            main.removeChild(id)
+        }
+        createGameBoard.displayGameBoard();
+        createGameBoard.createdArray();
+        turn = 0
+    }
+
+    function changeTextContent() {
+        if (player1.win) {
+            p.textContent = `${player2.name} starts!`
+        } else if (!player1.win) {
+            p.textContent = `${player1.name} starts!`
+        }
+    }
+
+    window.onload = () => {
+            document.getElementById('form').reset()
     }
 
     return {play}

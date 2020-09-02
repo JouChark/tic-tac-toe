@@ -6,27 +6,30 @@
     <title>TIC TAC TOE</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="body">
     <header>
-        <form id="form">
-            <div>
-                <label for="player1">Player 1: </label>
-                <input type="text" id="player1">
+        <h1 id="title">TIC TAC TOE</h1>
+        <div id="choices">
+            <h2 id="newGame">New Game</h2>
+            <h2 id="restart">Restart</h2>
+        </div>
+    </header>
+    <form id="form" class="hiddenForm">
+            <div id="playerModeSelection">
+                <select id="playerMode">
+                    <option id="singlePlayer" class="modeOption" value="1">1 Player</option>
+                    <option id="multiPlayer" class="modeOption" value="2" selected>2 Players</option>
+                </select>
             </div>
-            <div>
-                <label for="player2">Player 2: </label>
-                <input type="text" id="player2">
-            </div>
-            <div>
-                <input type="button" value="Submit" id="submit">
+            <div id="playerName">
+                <input type="text" id="player1" class="playerName" placeholder="Player 1">
+                <input type="text" id="player2" class="playerName" placeholder="Player 2">
             </div>
         </form>
-    </header>
-    
+    <div id="result">
+        <p id="p">Player 1 starts!</p>
+    </div>
     <main id="main"></main>
-
-    <p id="p">Let's play!</p>
-    <button id="reset">Restart</button>
 
     <script src="main.js"></script>
     

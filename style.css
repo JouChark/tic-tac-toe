@@ -3,26 +3,57 @@
     padding: 0;
 }
 
-header {
+::selection {
+    background-color: none;
+}
+
+header, #form {
     margin: 15px;
     text-align: center;
+    justify-content: center;
+}
+
+h1, h2 {
+    margin: 15px;
+}
+
+h2 {
+    cursor: pointer;
+}
+
+#form {
+    position: fixed;
+    z-index: 2;
+    top: 15%;
+    left: 29.23%;
+}
+
+#playerName {
+    display: flex;
+    gap: 50px;
+    justify-content: inherit;
+}
+
+.hiddenForm {
+    display: none;
+}
+
+.showForm {
+    display: block;
+}
+
+#form div {
+    margin: 15px;
+}
+
+#result {
+    min-height: 30px;
+    margin-top: 30px;
+    font-size: 22px;
 }
 
 body {
     text-align: center;
-}
-
-header div {
-    margin: 15px;
-}
-
-#players {
-    margin: 15px;
-    display: inline-flex;
-}
-
-#submit1 {
-    margin-right: 50px;
 }
 
 #main {
@@ -30,7 +61,7 @@ header div {
     grid-template-rows: repeat(3, 1fr);
     font-family: sans-serif;
     text-align: center;
-    margin: 100px auto;
+    margin: 70px auto 85px auto;
     line-height: 98px;
     font-size: 3em;
     display: grid;
@@ -56,4 +87,8 @@ header div {
 
 .cell:nth-child(3n + 1) {
     border-left: none;
+}
+
+#choices {
+    display: inline-flex;
 }
