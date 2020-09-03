@@ -7,54 +7,26 @@
     background-color: none;
 }
 
+/*** HEADER ***/
 header {
-    background-color: #626cf3;
-}
-
-header, #form {
-    padding: 10px;
-    justify-content: center;
-}
-
-h1 {
-    color: #33eeee;
-    font-size: 2.2em;
-}
-
-h1, h2 {
-    margin: 15px;
-}
-
-h2 {
-    cursor: pointer;
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
 }
 
 #form {
-    position: fixed;
-    z-index: 2;
-    left: 30.1%;
-    top: 17.5%;
+    justify-content: center;
 }
 
-@-moz-document url-prefix() {
-    #form {
-        left: 29.23%;
-        top: 19%;
-    }
+h2 {
+    margin: 15px;
+    cursor: pointer;
 }
 
 #playerName {
     display: flex;
     gap: 50px;
     justify-content: inherit;
-}
-
-.hiddenForm {
-    display: none;
-}
-
-.showForm {
-    display: block;
 }
 
 #form div {
@@ -79,10 +51,31 @@ h2 {
     font-size: 22px;
 }
 
+/*** BODY ***/
 body {
+    width: 100vw;
     text-align: center;
 }
 
+nav {
+    margin: 55px 35px;
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+}
+
+h1 {
+    font-size: 2.2em;
+}
+
+#sideTitle1 {
+    float: left;
+}
+
+#sideTitle2 {
+    float: right;
+}
+
+/*** MAIN (GAME BOARD) ***/
 #main {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
