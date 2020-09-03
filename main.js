@@ -39,9 +39,6 @@ const getPlayers = (() => {
         if (player1.name === '') {
             player1.name = 'Player 1'
         }
-        if (player2.name === '') {
-            player2.name = 'Player 2'
-        }
     }
 
     return {players, changeName}
@@ -57,7 +54,7 @@ const playGame = (() => {
     let p = document.getElementById('p')
 
     function play() {
-        createNewGame()
+        changeMode()
         restartGame()
         main.addEventListener('click', (e) => {
             let id = e.target.id;
@@ -66,21 +63,7 @@ const playGame = (() => {
         }) 
     }
 
-    function createNewGame() {
-        changeInputText()
-        changePlayerMode()
-    }
-
-    function changePlayerMode() {
-        const playerMode = document.getElementById('playerMode')
-        playerMode.addEventListener('click', () => {
-            if (this.value === '2') {player2.name === 'IA'}
-            getPlayers.changeName()
-            resetBoard()
-        })
-    }
-
-    function changeInputText() {
+    function changeMode() {
         const placeholderText = document.getElementById('player2')
         const playerMode = document.getElementById('playerMode')
         playerMode.addEventListener('change', function() {
@@ -90,9 +73,13 @@ const playGame = (() => {
                 placeholderText.value = 'IA'
             } else if (this.value === '2') {
                 placeholderText.placeholder = 'Player 2'
+                placeholderText.value = 'Player 2'
                 placeholderText.disabled = false
-                placeholderText.value = ''
             }
+            getPlayers.changeName()
+            player1.win = false
+            changeTextContent()
+            resetBoard()
         })
     }
 
@@ -157,31 +144,42 @@ const playGame = (() => {
     }
 
     function getWinner() {
-        if ((gameBoard[0] === 'X' && gameBoard[1] ==='X' && gameBoard[2] === 'X') ||
-            (gameBoard[3] === 'X' && gameBoard[4] ==='X' && gameBoard[5] === 'X') ||
-            (gameBoard[6] === 'X' && gameBoard[7] ==='X' && gameBoard[8] === 'X') ||
-            (gameBoard[0] === 'X' && gameBoard[3] ==='X' && gameBoard[6] === 'X') ||
-            (gameBoard[1] === 'X' && gameBoard[4] ==='X' && gameBoard[7] === 'X') ||
-            (gameBoard[2] === 'X' && gameBoard[5] ==='X' && gameBoard[8] === 'X') ||
-            (gameBoard[0] === 'X' && gameBoard[4] ==='X' && gameBoard[8] === 'X') ||
-            (gameBoard[2] === 'X' && gameBoard[4] ==='X' && gameBoard[6] === 'X')) {
-                p.textContent = `${player1.name} wins!`
-                player1.win = true
+        const winCondition = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ]
+        
+        winCondition.forEach((el) => {
+            let resultX = 0;
+            let resultY = 0;
+            el.forEach((e) => {
+                if (gameBoard[e] === 'X') {
+                    resultX += 1;
+                } 
+                if (gameBoard[e] === 'O') {
+                    resultY +=1;
+                }
+            })
+            if (resultX === 3) {
+                p.textContent = `${player1.name} wins!`;
+                player1.win = true;
                 turn = 10
-        } else if ((gameBoard[0] === 'O' && gameBoard[1] ==='O' && gameBoard[2] === 'O') ||
-                   (gameBoard[3] === 'O' && gameBoard[4] ==='O' && gameBoard[5] === 'O') ||
-                   (gameBoard[6] === 'O' && gameBoard[7] ==='O' && gameBoard[8] === 'O') ||
-                   (gameBoard[0] === 'O' && gameBoard[3] ==='O' && gameBoard[6] === 'O') ||
-                   (gameBoard[1] === 'O' && gameBoard[4] ==='O' && gameBoard[7] === 'O') ||
-                   (gameBoard[2] === 'O' && gameBoard[5] ==='O' && gameBoard[8] === 'O') ||
-                   (gameBoard[0] === 'O' && gameBoard[4] ==='O' && gameBoard[8] === 'O') ||
-                   (gameBoard[2] === 'O' && gameBoard[4] ==='O' && gameBoard[6] === 'O')) {
-                        p.textContent = `${player2.name} wins!`
-                        player1.win = false
-                        turn = 10
-        } else if (turn === 9) {
-            p.textContent = `It's a draw!`
-        }
+            } 
+            if (resultY === 3) {
+                p.textContent = `${player2.name} wins!`;
+                player1.win = false;
+                turn = 10
+            } 
+            if (turn === 9) {
+                p.textContent = `It's a draw!`;
+            }
+        })
     }
 
     function restartGame() {
