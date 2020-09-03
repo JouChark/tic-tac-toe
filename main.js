@@ -56,48 +56,27 @@ const playGame = (() => {
 
     let p = document.getElementById('p')
 
-    let turn = 0;
-
     function play() {
         createNewGame()
         restartGame()
-        if (turn < 9) {
-            main.addEventListener('click', (e) => {
-                let id = e.target.id;
-                playRound(id);
-                displayMark(id);
-                getWinner();
-        })
-        }    
+        main.addEventListener('click', (e) => {
+            let id = e.target.id;
+            playRound(id);
+            displayMark(id);
+        }) 
     }
 
     function createNewGame() {
-        changeForm()
         changeInputText()
         changePlayerMode()
     }
 
-    function changeForm() {
-        const newGame = document.getElementById('newGame')
-        const form = document.getElementById('form')
-        newGame.addEventListener('click', () => {
-            if (form.className === 'hiddenForm') {
-                form.className = 'showForm'
-                p.style.color = 'rgba(0, 0, 0, 0.2)'
-            } else {
-                getPlayers.changeName()
-                p.style.color = '#000'
-                form.className = 'hiddenForm'
-                p.textContent = `${player1.name} starts!`
-            }
-        })
-    }
-
     function changePlayerMode() {
         const playerMode = document.getElementById('playerMode')
-        playerMode.addEventListener('change', () => {
-            resetBoard()
+        playerMode.addEventListener('click', () => {
+            if (this.value === '2') {player2.name === 'IA'}
             getPlayers.changeName()
+            resetBoard()
         })
     }
 
@@ -107,35 +86,69 @@ const playGame = (() => {
         playerMode.addEventListener('change', function() {
             if(this.value === '1') {
                 placeholderText.placeholder = 'IA'
+                placeholderText.disabled = true
                 placeholderText.value = 'IA'
             } else if (this.value === '2') {
                 placeholderText.placeholder = 'Player 2'
+                placeholderText.disabled = false
+                placeholderText.value = ''
             }
         })
     }
 
-    function playRound (id) {
-        if (!player1.win && turn < 10) {
-            document.getElementById('form').className = 'hiddenForm'
-            if (turn % 2 === 0 && gameBoard[id] === null) {
-                gameBoard.splice(id, 1, player1.mark);
-                turn++;
-            } 
-            if (turn % 2 !== 0 && gameBoard[id] === null) {
-                gameBoard.splice(id, 1, player2.mark);
-                turn++;
-            }
-        } else if (player1 && turn < 10) {
-            if (turn % 2 !== 0 && gameBoard[id] === null) {
-                gameBoard.splice(id, 1, player1.mark);
-                turn++;
-            } 
-            if (turn % 2 === 0 && gameBoard[id] === null) {
-                gameBoard.splice(id, 1, player2.mark);
-                turn++;
+    let turn = 0;
+
+    function playRound(id) {
+        if (player2.name === 'IA' && turn < 9) {
+                if (turn % 2 === 0) {
+                    playerTurn(id, player1.mark)
+                }
+                if (turn % 2 !== 0) {
+                    setTimeout(iaTurn, 500)
+                }
+        } else {
+            if (!player1.win && turn < 10) {
+                if (turn % 2 === 0) {
+                    playerTurn(id, player1.mark)
+                } 
+                if (turn % 2 !== 0) {
+                    playerTurn(id, player2.mark)
+                }
+            } else if (player1.win && turn < 10) {
+                if (turn % 2 !== 0) {
+                    playerTurn(id, player1.mark)
+                } 
+                if (turn % 2 === 0) {
+                    playerTurn(id, player2.mark)
+                }
             }
         }
-        
+    }
+
+    function playerTurn(id, mark) {
+        if (gameBoard[id] === null) {
+            gameBoard.splice(id, 1, mark);
+            turn++;
+        }
+        getWinner();
+    }
+
+    function iaTurn() {
+        if (turn < 9) {
+            let result = false
+            while (!result) {
+                let iaPlay = Math.floor(Math.random() * 9)
+                if (gameBoard[iaPlay] === null) {
+                    gameBoard.splice(iaPlay, 1, 'O');
+                    result = true
+                    turn++
+                } else {
+                    result = false
+                }
+                displayMark(iaPlay)
+                getWinner();
+            }
+        }
     }
 
     function displayMark(id) {
@@ -190,17 +203,19 @@ const playGame = (() => {
     }
 
     function changeTextContent() {
-        if (player1.win) {
-            p.textContent = `${player2.name} starts!`
-        } else if (!player1.win) {
+        if (player2.name === "IA") {
             p.textContent = `${player1.name} starts!`
+        } else {
+            if (player1.win) {
+                p.textContent = `${player2.name} starts!`
+            } else if (!player1.win) {
+                p.textContent = `${player1.name} starts!`
+            }
         }
     }
 
     window.onload = () => {
             document.getElementById('form').reset()
-            document.getElementById('form').className = 'showForm'
-            p.style.color = 'rgba(0, 0, 0, 0.2)'
     }
 
     return {play}
