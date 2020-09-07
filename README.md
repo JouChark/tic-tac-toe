@@ -3,4 +3,4 @@ A simple game of tic tac toe for [the Odin Project](https://www.theodinproject.c
 
 Made with JavaScript, HTML e CSS.
 
-Can be seen [here](https://jouchark.github.io/tic-tac-toe/)
+Can be seen [here](https://uauramenezes.github.io/tic-tac-toe/)
