@@ -67,14 +67,6 @@ h1 {
     font-size: 2.2em;
 }
 
-#sideTitle1 {
-    float: left;
-}
-
-#sideTitle2 {
-    float: right;
-}
-
 /*** MAIN (GAME BOARD) ***/
 #main {
     grid-template-columns: repeat(3, 1fr);
