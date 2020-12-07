@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  text-align: center;
+}
+
+#main {
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  font-family: sans-serif;
+  margin: 15% auto;
+  line-height: 98px;
+  font-size: 3em;
+  display: grid;
+  height: 300px;
+  width: 300px;
+}
+
+.column0 div, .column1 div{
+  border-right: 2px solid black;
+}
+
+.row0, .row1 {
+  border-top: 2px solid black;
+}
