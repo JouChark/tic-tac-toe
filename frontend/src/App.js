@@ -1,32 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
 
 function App() {
-  const DisplayGameBoard = () => {
-    const row = []
+
+  const DisplayBoard = () => {
+    const cell = [];
   
-    for (let i = 0; i < 3; i++) {
-      const column = []
-  
-      for (let j = 2; j >= 0; j--) {
-        column.push(
+    for (let i = 0; i < 9; i++) {
+        cell.push(
           <div
-          key={`${j}${i}`}
-          id={`${j}${i}`}
-          className={`row${j}`}>
+          key={i}
+          id={i}
+          className='cell'>
             &nbsp;
           </div>
-        )
-      }
-  
-      row.push(<div key={`${i}`} className={`column${i}`}>{column}</div>)
+        );
     }
   
-    return row
+    return cell;
   }
 
   return (
-    <main id='main'>{DisplayGameBoard()}</main>
+    <main id='main'>{DisplayBoard()}</main>
   );
 }
 
