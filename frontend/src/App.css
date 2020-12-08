@@ -6,15 +6,59 @@
 body {
   width: 100vw;
   text-align: center;
+  font-size: 16px;
 }
 
+/*** HEADER ***/
+header {
+  background-color: #252525;
+  color: #fff;
+  padding: 10px;
+}
+
+form {
+  justify-content: center;
+  margin: 15px;
+}
+
+form input {
+  height: 33px;
+  width: 200px;
+  font-size: 1em;
+}
+
+@media (max-width: 450px) {
+  form input {
+    width: 35vw;
+  }
+}
+
+#restart {
+  margin: 15px 0 5px 0;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+#playerName {
+  justify-content: inherit;
+  display: flex;
+  gap: 50px;
+}
+
+#result {
+  min-height: 30px;
+  font-size: 1.5em;
+  margin-top: 25px;
+}
+
+/*** MAIN (GAME BOARD) ***/
 #main {
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   font-family: sans-serif;
   line-height: 98px;
   user-select: none;
-  margin: 15% auto;
+  margin: 5% auto;
   font-size: 3em;
   display: grid;
   height: 300px;
@@ -27,10 +71,4 @@ body {
 
 .cell:nth-child(3n + 1), .cell:nth-child(3n-1) {
   border-right: 2px solid black;
-}
-
-#p {
-  margin-top: 100px;
-  margin-bottom: -150px;
-  font-size: 1.5em;
 }
