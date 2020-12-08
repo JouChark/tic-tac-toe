@@ -11,14 +11,13 @@ function App() {
   function Header() {
     return(
       <header>
-        <button id="restart">Restart</button>
+        <h1>Tic Tac Toe</h1>
         <form id="form">
           <input type="text" id="player1" className="playerName" placeholder="Player 1" />
           <input type="text" id="player2" className="playerName" placeholder="Player 2" />
         </form>
         <button id="submit" onClick={changePlayerName}>Submit</button>
       </header>
-      
     )
   }
 
