@@ -5,6 +5,7 @@ function App() {
   const [turn, setTurn] = useState(0)
   const [board, setBoard] = useState(Array(9).fill(null))
   const [winner, setWinner] = useState(null)
+  const [player, setPlayer] = useState('Player 1')
 
   // Create and display the the Tic Tac Toe board
   const DisplayBoard = () => {
@@ -73,26 +74,35 @@ function App() {
     })
   }
 
+  const getPlayerTurn = () => {
+    setPlayer(
+      turn % 2 === 0 ? 'Player 1' : 'Player 2'
+    )
+  }
+
   // Change the paragraph text to show who plays the turn and the final result
   const changeText = () => {
     let p = document.getElementById('p')
-    if (winner === 'Draw') {
+    if (!winner) {
+      p.textContent = `${player} turn`
+    } else if (winner === 'Draw') {
       p.textContent = "It's a Draw!"
-    } else if (winner === 'Player 1' || winner === 'Player 2') {
+    } else {
       p.textContent = `${winner} Wins!`
     }
   }
 
   useEffect(() => {
     getWinner()
+    getPlayerTurn()
     changeText()
   })
 
 
   return (
     <React.Fragment>
-      <main id='main'>{DisplayBoard()}</main>
       <p id='p'></p>
+      <main id='main'>{DisplayBoard()}</main>
     </React.Fragment>
   );
 }
