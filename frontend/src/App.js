@@ -6,6 +6,7 @@ function App() {
   const [board, setBoard] = useState(Array(9).fill(null))
   const [winner, setWinner] = useState(null)
   const [player, setPlayer] = useState('Player 1')
+  const [players, setPlayers] = useState(['Player 1', 'Player 2'])
 
   function Header() {
     return(
@@ -15,7 +16,7 @@ function App() {
           <input type="text" id="player1" className="playerName" placeholder="Player 1" />
           <input type="text" id="player2" className="playerName" placeholder="Player 2" />
         </form>
-        <p id='result'></p>
+        <button id="submit" onClick={changePlayerName}>Submit</button>
       </header>
       
     )
@@ -80,7 +81,7 @@ function App() {
       let [a, b, c] = arr
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
         setWinner(
-          board[a] === 'X' ? 'Player 1' : 'Player 2'
+          board[a] === 'X' ? players[0] : players[1]
         )
       } else if (turn > 8) {
         setWinner('Draw')
@@ -88,9 +89,26 @@ function App() {
     })
   }
 
+  const changePlayerName = (e) => {
+    let player1 = document.getElementById('player1').value
+    let player2 = document.getElementById('player2').value
+
+    if (player1 && player2) {
+      setPlayers([player1, player2])
+    } else if (player1) {
+      setPlayers([player1, 'Player 2'])
+    } else if (player2) {
+      setPlayers(['Player 1', player2])
+    } else {
+      setPlayers(['Player 1', 'Player 2'])
+    }
+
+    console.log(player1, player2)
+  }
+
   const getPlayerTurn = () => {
     setPlayer(
-      turn % 2 === 0 ? 'Player 1' : 'Player 2'
+      turn % 2 === 0 ? players[0] : players[1]
     )
   }
 
@@ -116,6 +134,7 @@ function App() {
   return (
     <React.Fragment>
       <Header />
+      <p id='result'></p>
       <main id='main'>{DisplayBoard()}</main>
     </React.Fragment>
   );
