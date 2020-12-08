@@ -57,16 +57,6 @@ body {
     text-align: center;
 }
 
-nav {
-    margin: 55px 35px;
-    writing-mode: vertical-lr;
-    text-orientation: upright;
-}
-
-h1 {
-    font-size: 2.2em;
-}
-
 /*** MAIN (GAME BOARD) ***/
 #main {
     grid-template-columns: repeat(3, 1fr);
