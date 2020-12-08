@@ -4,7 +4,9 @@ import './App.css'
 function App() {
   const [turn, setTurn] = useState(0)
   const [board, setBoard] = useState(Array(9).fill(null))
+  const [winner, setWinner] = useState(null)
 
+  // Create and display the the Tic Tac Toe board
   const DisplayBoard = () => {
     const cell = [];
   
@@ -23,11 +25,12 @@ function App() {
     return cell;
   }
 
+  // Get the id of the clicked cell and fill the board array with the appropriate sign
   function playTurn(e) {
     let id = e.target.id
 
     let gameBoard = board.slice()
-    if (!gameBoard[id]) {
+    if (!gameBoard[id] && !winner) {
       setTurn(turn + 1)
       gameBoard[id] = turn % 2 === 0 ? 'X' : 'O'
     }
@@ -35,6 +38,7 @@ function App() {
     setBoard(gameBoard)
   }
 
+  // Verify changes in board array and display it
   useEffect(() => {
     board.forEach((value, index) => {
       if (value) {
@@ -44,9 +48,51 @@ function App() {
     })  
   })
 
+  // Verify the board if the winning condition is met
+  function getWinner() {
+    const winCondition = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    winCondition.forEach((arr) => {
+      let [a, b, c] = arr
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        setWinner(
+          board[a] === 'X' ? 'Player 1' : 'Player 2'
+        )
+      } else if (turn > 8) {
+        setWinner('Draw')
+      }
+    })
+  }
+
+  // Change the paragraph text to show who plays the turn and the final result
+  const changeText = () => {
+    let p = document.getElementById('p')
+    if (winner === 'Draw') {
+      p.textContent = "It's a Draw!"
+    } else if (winner === 'Player 1' || winner === 'Player 2') {
+      p.textContent = `${winner} Wins!`
+    }
+  }
+
+  useEffect(() => {
+    getWinner()
+    changeText()
+  })
+
+
   return (
     <React.Fragment>
       <main id='main'>{DisplayBoard()}</main>
+      <p id='p'></p>
     </React.Fragment>
   );
 }
