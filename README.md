@@ -2,5 +2,3 @@
 A simple game of tic tac toe build with React.
 
 It can be played [here](https://uauramenezes.github.io/tic-tac-toe/).
-
-It was first build for [the Odin Project](https://www.theodinproject.com/courses/javascript/lessons/tic-tac-toe-javascript?ref=lnav) and made with just JavaScript, HTML e CSS. The old code is stored in the legacy folder.
