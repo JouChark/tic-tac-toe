@@ -24,20 +24,27 @@ form {
 }
 
 form input {
-  height: 33px;
+  height: 30px;
   width: 200px;
   font-size: 1em;
 }
 
 @media (max-width: 450px) {
+  form {
+    gap: 15px
+  }
+
   form input {
-    width: 35vw;
+    width: 45vw;
   }
 }
 
-#submit {
+#submit, #reset {
   cursor: pointer;
   font-size: 1em;
+  width: 100px;
+  height: 25px;
+  margin: 0 5px 5px 5px;
 }
 
 #playerName {
