@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+import './App.css';
 
 function App() {
-  const [turn, setTurn] = useState(0)
-  const [board, setBoard] = useState(Array(9).fill(null))
-  const [winner, setWinner] = useState(null)
-  const [player, setPlayer] = useState('Player 1')
-  const [players, setPlayers] = useState(['Player 1', 'Player 2'])
+  const [turn, setTurn] = useState(0);
+  const [win, setWin] = useState(false);
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [players, setPlayers] = useState(['Player 1', 'Player 2']);
 
   function Header() {
     return(
@@ -16,7 +15,10 @@ function App() {
           <input type="text" id="player1" className="playerName" placeholder="Player 1" />
           <input type="text" id="player2" className="playerName" placeholder="Player 2" />
         </form>
-        <button id="submit" onClick={changePlayerName}>Submit</button>
+        <div id='buttons'>
+          <button id="submit" onClick={changePlayerName}>Submit</button>
+          <button id="reset" onClick={resetGame}>Reset</button>
+        </div>
       </header>
     )
   }
@@ -34,36 +36,46 @@ function App() {
           onClick={playTurn}>
             &nbsp;
           </div>
-        );
+        )
     }
   
     return cell;
   }
+  
+  const changePlayerName = () => {
+    let player1 = document.getElementById('player1').value.trim();
+    let player2 = document.getElementById('player2').value.trim();
 
-  // Get the id of the clicked cell and fill the board array with the appropriate sign
-  function playTurn(e) {
-    let id = e.target.id
+    if (player1 === '') {player1 = 'Player 1'};
+    if (player2 === '') {player2 = 'Player 2'};
 
-    let gameBoard = board.slice()
-    if (!gameBoard[id] && !winner) {
-      setTurn(turn + 1)
-      gameBoard[id] = turn % 2 === 0 ? 'X' : 'O'
-    }
-    
-    setBoard(gameBoard)
+    setPlayers([player1, player2]);
   }
 
-  // Verify changes in board array and display it
-  useEffect(() => {
-    board.forEach((value, index) => {
-      if (value) {
-        let div = document.getElementById(index)
-        div.textContent = value
-      }
-    })  
-  })
+  // Get the id of the clicked cell and update the board and the turn
+  function playTurn(e) {
+    let id = e.target.id;
+    let mark = turn % 2 === 0 ? 'X' : 'O';
 
-  // Verify the board if the winning condition is met
+    if (!board[id] && !win) {
+      updateBoard(id, mark);
+      showMark(id, mark);
+      setTurn(turn + 1);
+    }
+  }
+
+  function updateBoard(id, mark) {
+    let gameBoard = board.slice();
+    gameBoard[id] = mark;
+    setBoard(gameBoard);
+  }
+
+  function showMark(id, mark) {
+    let cell = document.getElementById(id);
+    cell.textContent = mark;
+  }
+
+  // Verify the board if the winning condition is met and change text accordingly
   function getWinner() {
     const winCondition = [
       [0, 1, 2],
@@ -74,61 +86,45 @@ function App() {
       [2, 5, 8],
       [0, 4, 8],
       [2, 4, 6]
-    ];
+    ]
 
     winCondition.forEach((arr) => {
-      let [a, b, c] = arr
+      let [a, b, c] = arr;
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        setWinner(
-          board[a] === 'X' ? players[0] : players[1]
-        )
-      } else if (turn > 8) {
-        setWinner('Draw')
+        let winner = board[a] === 'X' ? players[0] : players[1];
+        changeText(`${winner} Wins!`);
+        setWin(true);
+      } else if (turn === 9 && !win) {
+        changeText("It's a Draw!");
       }
     })
   }
 
-  const changePlayerName = (e) => {
-    let player1 = document.getElementById('player1').value
-    let player2 = document.getElementById('player2').value
-
-    if (player1 && player2) {
-      setPlayers([player1, player2])
-    } else if (player1) {
-      setPlayers([player1, 'Player 2'])
-    } else if (player2) {
-      setPlayers(['Player 1', player2])
-    } else {
-      setPlayers(['Player 1', 'Player 2'])
-    }
-
-    console.log(player1, player2)
-  }
-
   const getPlayerTurn = () => {
-    setPlayer(
-      turn % 2 === 0 ? players[0] : players[1]
-    )
+    let player = turn % 2 === 0 ? players[0] : players[1];
+    if (!win && turn < 8) {
+      changeText(`${player}'s turn`);
+    }
   }
 
-  // Change the paragraph text to show who plays the turn and the final result
-  const changeText = () => {
-    let p = document.getElementById('result')
-    if (!winner) {
-      p.textContent = `${player} turn`
-    } else if (winner === 'Draw') {
-      p.textContent = "It's a Draw!"
-    } else {
-      p.textContent = `${winner} Wins!`
-    }
+  const changeText = (text) => {
+    let p = document.getElementById('result');
+    p.textContent = text;
   }
 
   useEffect(() => {
-    getWinner()
-    getPlayerTurn()
-    changeText()
+    getWinner();
+    getPlayerTurn();
   })
 
+  function resetGame() {
+    setBoard(Array(9).fill(null));
+    setTurn(turn - turn);
+    setWin(false);
+    for (let i = 0; i < board.length; i++) {
+      showMark(i, '');
+    }
+  }
 
   return (
     <React.Fragment>
@@ -136,7 +132,7 @@ function App() {
       <p id='result'></p>
       <main id='main'>{DisplayBoard()}</main>
     </React.Fragment>
-  );
+  )
 }
 
 export default App;
