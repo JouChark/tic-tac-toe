@@ -23,7 +23,11 @@ function Game() {
     return cell;
   }
 
-  socket.emit('join')
+  useEffect(() => {
+    window.addEventListener('load', () => {
+      socket.emit('enter');
+    });
+  });
 
   function playTurn(e) {
     let id = e.target.id
@@ -31,14 +35,17 @@ function Game() {
   }
 
   useEffect(() => {
-    socket.on('update', id => {
-      console.log(id)
+    socket.on('update', (id, mark, player) => {
+      let p = document.getElementById('result');
+      let cell = document.getElementById(id);
+      cell.textContent = mark;
+      p.textContent = `${player}'s turn!`
     })
   })
   
   return (
     <React.Fragment>
-      <p id='result'></p>
+      <p id='result'>Player 1's turn!</p>
       <main id='main'>{DisplayBoard()}</main>
     </React.Fragment>
   );
