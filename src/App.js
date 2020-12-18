@@ -1,5 +1,5 @@
 import React from 'react';
-import Game from './components/Game'
+import Board from './components/Board'
 import './App.css'
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
       <header>
         <h1>TIC TAC TOE</h1>
       </header>
-      <Game />
+      <Board />
     </div>
   );
 }

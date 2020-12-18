@@ -1,9 +1,8 @@
 import React, { useEffect} from 'react';
-import io from 'socket.io-client'
+import io from 'socket.io-client';
 
-function Game() {
-  const socket = io('http://localhost:5000')
-  let play = false
+function Board() {
+  const socket = io('http://localhost:5000');
 
   const DisplayBoard = () => {
     const cell = [];
@@ -31,62 +30,53 @@ function Game() {
   });
 
   socket.on('wait', () => {
-    let msg = 'Waiting for opponent'
-    changeText(msg)
+    changeText('Waiting for opponent');
   })
 
   function playTurn(e) {
-    if (play) {
-      let index = e.target.id;
-      socket.emit('play', index);
-    };
+    socket.emit('play', e.target.id);
   };
 
   useEffect(() => {
-    socket.on('play', (turnId) => {
-      canPlay(turnId, socket.id);
+    socket.on('update', (turnId, mark, id) => {
+      playerTurn(socket.id, turnId);
+      if (mark) {
+        changeMark(id, mark);
+      }
     });
   });
 
-  useEffect(() => {
-    socket.on('update', (id, mark, turnId) => {
-      changeMark(id, mark);
-      canPlay(turnId, socket.id);
-    });
-  });
-
-  socket.on('winner', winner => {
-    if (socket.id === winner) {
-      changeText('You Won!')
-    } else if (winner) {
-      changeText('You Lost!')
-    }
-  })
-  
-  socket.on('playerDisconnected', () => {
-    changeText("Your opponent disconnected");
-    play = false
-  });
-
-  function canPlay(turnId, playerId) {
+  function playerTurn(playerId, turnId) {
     if (turnId === playerId) {
-      play = true
-      changeText('Your turn')
+      changeText('Your turn');
     } else {
-      play = false
-      changeText("Opponent's turn")
+      changeText("Opponent's turn");
     }
   }
 
   function changeText(msg) {
     let p = document.getElementById('result');
-    p.textContent = msg
+    p.textContent = msg;
   }
 
   function changeMark(id, mark) {
     let cell = document.getElementById(id);
     cell.textContent = mark;
   }
+
+  socket.on('winner', winner => {
+    if (socket.id === winner) {
+      changeText('You Won!');
+    } else if (winner === 'draw') {
+      changeText("It's a Draw!");
+    } else if (winner) {
+      changeText('You Lost!');
+    }
+  });
+  
+  socket.on('playerDisconnected', () => {
+    changeText("Your opponent disconnected");
+  });
   
   return (
     <React.Fragment>
@@ -96,4 +86,4 @@ function Game() {
   );
 };
 
-export default Game
+export default Board
