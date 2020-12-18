@@ -6,11 +6,10 @@ const io = require('socket.io')(http, {
   }
 });
 
-const rooms = {};
-
-let n = 0;
-
 let port = process.env.PORT || 5000;
+
+const rooms = {};
+let n = 0;
 
 app.get('/', (req, res) => {
   console.log('OK!');
@@ -21,32 +20,35 @@ io.on('connection', (socket) => {
     let room = `room${n}`;
     socket.join(room);
 
-    if (!rooms.room) {
-      rooms.room = {players: [socket.id]};
+    if (!rooms[`${room}`]) {
+      rooms[`${room}`] = {'players': {'player1': socket.id}};
+      io.to(room).emit('wait')
     } else {
-      rooms.room.players.push(socket.id);
-      rooms.room.board = Array(9).fill(null);
-      rooms.room.turn = 0;
+      rooms[`${room}`].players.player2 = socket.id;
+      rooms[`${room}`].board = Array(9).fill(null);
+      rooms[`${room}`].turn = 0;
       n += 1;
+      io.to(room).emit('play', rooms[`${room}`].players.player1)
     }
   });
 
   socket.on('play', (id) => {
-    if (!rooms.room.board[id]) {
-      let room = Array.from(socket.rooms)[1];
-      let playerTurn;
+    let room = Array.from(socket.rooms)[1];
+    if (!rooms[`${room}`].board[id]) {
+      let turnId;
+      let mark;
 
-      if (rooms.room.turn % 2 === 0) {
-        rooms.room.board[id] = 'X'
-        playerTurn = 'Player 2'
+      if (rooms[`${room}`].turn % 2 === 0) {
+        mark = 'X'
+        turnId = rooms[`${room}`].players.player2
       } else {
-        rooms.room.board[id] = 'O'
-        playerTurn = 'Player 1'
+        mark = 'O'
+        turnId = rooms[`${room}`].players.player1
       }
 
-      rooms.room.turn += 1;
-      let mark = rooms.room.board[id]
-      io.to(room).emit('update', id, mark, playerTurn);
+      rooms[`${room}`].turn += 1;
+      rooms[`${room}`].board[id] = mark
+      io.to(room).emit('update', id, mark, turnId);
     }
   });
 });
