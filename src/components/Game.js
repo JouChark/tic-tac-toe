@@ -31,7 +31,7 @@ function Game() {
   });
 
   socket.on('wait', () => {
-    let msg = 'Waiting for another player'
+    let msg = 'Waiting for opponent'
     changeText(msg)
   })
 
@@ -55,6 +55,14 @@ function Game() {
     });
   });
 
+  socket.on('winner', winner => {
+    if (socket.id === winner) {
+      changeText('You Won!')
+    } else if (winner) {
+      changeText('You Lost!')
+    }
+  })
+  
   socket.on('playerDisconnected', () => {
     changeText("Your opponent disconnected");
     play = false

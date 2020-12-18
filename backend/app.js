@@ -11,13 +11,38 @@ let port = process.env.PORT || 5000;
 const rooms = {};
 let n = 0;
 
-app.get('/', (req, res) => {
-  console.log('OK!');
-});
+app.get('/');
+
+function getWinner(room) {
+  const winCondition = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ]
+
+  let board = room.board
+
+  winCondition.forEach((arr) => {
+    let [a, b, c] = arr;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      room.winner = board[a] === 'X' ? 
+      room.players.player1 : 
+      room.players.player2; 
+    } else if (room.turn === 9 && !room.winner) {
+      room.winner = "It's a Draw!";
+    } 
+  })
+}
 
 io.on('connection', (socket) => {
   socket.on('enter', () => {
     let room = `room${n}`;
+
     socket.join(room);
 
     if (!rooms[`${room}`]) {
@@ -26,6 +51,7 @@ io.on('connection', (socket) => {
     } else {
       rooms[`${room}`].players.player2 = socket.id;
       rooms[`${room}`].board = Array(9).fill(null);
+      rooms[`${room}`].winner = null;
       rooms[`${room}`].turn = 0;
       n += 1;
       io.to(room).emit('play', rooms[`${room}`].players.player1)
@@ -33,22 +59,30 @@ io.on('connection', (socket) => {
   });
 
   socket.on('play', (id) => {
-    let room = Array.from(socket.rooms)[1];
-    if (!rooms[`${room}`].board[id]) {
+    let socketRoom = Array.from(socket.rooms)[1];
+    let room = rooms[`${socketRoom}`]
+    
+    if (!room.board[id] && !room.winner) {
       let turnId;
       let mark;
 
-      if (rooms[`${room}`].turn % 2 === 0) {
+      if (room.turn % 2 === 0) {
         mark = 'X'
-        turnId = rooms[`${room}`].players.player2
+        turnId = room.players.player2
       } else {
         mark = 'O'
-        turnId = rooms[`${room}`].players.player1
+        turnId = room.players.player1
       }
 
-      rooms[`${room}`].turn += 1;
-      rooms[`${room}`].board[id] = mark
-      io.to(room).emit('update', id, mark, turnId);
+      room.turn += 1;
+      room.board[id] = mark
+      io.to(socketRoom).emit('update', id, mark, turnId);
+
+      getWinner(socketRoom, room)
+    }
+
+    if (room.winner) {
+      io.to(socketRoom).emit('winner', room.winner);
     }
   });
 
