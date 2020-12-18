@@ -51,6 +51,18 @@ io.on('connection', (socket) => {
       io.to(room).emit('update', id, mark, turnId);
     }
   });
+
+  socket.on('disconnecting', () => {
+    let room = Array.from(socket.rooms)[1];
+    if (rooms[`${room}`]) {
+      if (rooms[`${room}`].players.player2) {
+        delete rooms[`${room}`].players.player2;
+        io.to(room).emit('playerDisconnected');
+      } else {
+        delete rooms[`${room}`];
+      }
+    }
+  });
 });
 
 http.listen(port, () => {

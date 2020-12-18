@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect} from 'react';
 import io from 'socket.io-client'
 
 function Game() {
   const socket = io('http://localhost:5000')
+  let play = false
 
   const DisplayBoard = () => {
     const cell = [];
@@ -29,23 +30,59 @@ function Game() {
     });
   });
 
+  socket.on('wait', () => {
+    let msg = 'Waiting for another player'
+    changeText(msg)
+  })
+
   function playTurn(e) {
-    let id = e.target.id
-    socket.emit('play', id)
-  }
+    if (play) {
+      let index = e.target.id;
+      socket.emit('play', index);
+    };
+  };
 
   useEffect(() => {
-    socket.on('update', (id, mark, player) => {
-      let p = document.getElementById('result');
-      let cell = document.getElementById(id);
-      cell.textContent = mark;
-      p.textContent = `${player}'s turn!`
-    })
-  })
+    socket.on('play', (turnId) => {
+      canPlay(turnId, socket.id);
+    });
+  });
+
+  useEffect(() => {
+    socket.on('update', (id, mark, turnId) => {
+      changeMark(id, mark);
+      canPlay(turnId, socket.id);
+    });
+  });
+
+  socket.on('playerDisconnected', () => {
+    changeText("Your opponent disconnected");
+    play = false
+  });
+
+  function canPlay(turnId, playerId) {
+    if (turnId === playerId) {
+      play = true
+      changeText('Your turn')
+    } else {
+      play = false
+      changeText("Opponent's turn")
+    }
+  }
+
+  function changeText(msg) {
+    let p = document.getElementById('result');
+    p.textContent = msg
+  }
+
+  function changeMark(id, mark) {
+    let cell = document.getElementById(id);
+    cell.textContent = mark;
+  }
   
   return (
     <React.Fragment>
-      <p id='result'>Player 1's turn!</p>
+      <p id='result'></p>
       <main id='main'>{DisplayBoard()}</main>
     </React.Fragment>
   );
