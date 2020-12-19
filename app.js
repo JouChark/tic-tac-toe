@@ -1,15 +1,19 @@
-const app = require('express')();
+const express = require('express');
+const app = express()
 const http = require('http').createServer(app);
+const favicon = require('express-favicon');
+const path = require('path');
 const io = require('socket.io')(http, {
   cors: {
     origin: 'http://localhost:3000',
   }
 });
+const {join, canPlay, play, removePlayer} = require('./game');
 
 let port = process.env.PORT || 5000;
 
-const {join, canPlay, play, removePlayer} = require('./game');
-
+app.use(favicon('../build/favicon.ico'))
+app.use(express.static(path.join('../')))
 app.get('/');
 
 io.on('connection', (socket) => {
@@ -39,6 +43,4 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+http.listen(port);
