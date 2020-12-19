@@ -2,7 +2,7 @@ import React, { useEffect} from 'react';
 import io from 'socket.io-client';
 
 function Board() {
-  const socket = io('http://localhost:5000');
+  const socket = io('https://dashboard.heroku.com/apps/tic-tac-toe-023');
 
   const DisplayBoard = () => {
     const cell = [];

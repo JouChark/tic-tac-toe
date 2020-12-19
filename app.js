@@ -12,9 +12,12 @@ const {join, canPlay, play, removePlayer} = require('./game');
 
 let port = process.env.PORT || 5000;
 
-app.use(favicon('../build/favicon.ico'))
-app.use(express.static(path.join('../')))
-app.get('/');
+app.use(favicon(__dirname + './client/build/favicon.ico'));
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 io.on('connection', (socket) => {
   socket.on('enter', () => {
