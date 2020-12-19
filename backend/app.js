@@ -8,7 +8,7 @@ const io = require('socket.io')(http, {
 
 let port = process.env.PORT || 5000;
 
-const {join, canPlay, playTurn, removePlayer} = require('./game');
+const {join, canPlay, play, removePlayer} = require('./game');
 
 app.get('/');
 
@@ -24,19 +24,17 @@ io.on('connection', (socket) => {
     let room = Array.from(socket.rooms)[1];
     
     if (canPlay(room, socket.id)) {
-      let [turnId, mark, winner] = playTurn(room, socket.id, index);
+      let [turnId, mark, winner] = play(room, index);
       io.to(room).emit('update', turnId, mark, index);
       if (winner) {
         io.to(room).emit('winner', winner)
       }
     }
-
-    
   });
 
   socket.on('disconnecting', () => {
     let room = Array.from(socket.rooms)[1];
-    removePlayer(room);
+    removePlayer(room, socket.id);
     socket.to(room).emit('playerDisconnected');
   });
 });

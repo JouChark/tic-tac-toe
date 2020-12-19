@@ -31,7 +31,7 @@ function Board() {
 
   socket.on('wait', () => {
     changeText('Waiting for opponent');
-  })
+  });
 
   function playTurn(e) {
     socket.emit('play', e.target.id);

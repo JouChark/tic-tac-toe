@@ -13,7 +13,7 @@ function join(id) {
     rooms[`${room}`].play = true;
     rooms[`${room}`].turn = 0;
     n += 1;
-    return [room, 'update', rooms[`${room}`].players.player1]
+    return [room, 'update', rooms[`${room}`].players.player1];
   }
 }
 
@@ -23,16 +23,15 @@ function canPlay(socketRoom, id) {
   if (player === id && room.play) {return true};
 }
 
-function playTurn(socketRoom, id, index) {
+function play(socketRoom, index) {
   let room = rooms[`${socketRoom}`];
 
-  let player = playerTurn(room);
-
-  if (player === id && !room.board[index]) {
+  if (!room.board[index]) {
     let mark = room.turn % 2 === 0 ? 'X' : 'O';
-    room.turn += 1;
     room.board[index] = mark;
+    room.turn += 1;
 
+    let player = playerTurn(room);
     let winner = getWinner(socketRoom);
     return [player, mark, winner];
   }
@@ -78,15 +77,20 @@ function getWinner(socketRoom) {
   return winner;
 }
 
-function removePlayer(room) {
+function removePlayer(room, id) {
   if (rooms[`${room}`]) {
-    if (rooms[`${room}`].players.player2) {
+    if (rooms[`${room}`].players.length === 2) {
       rooms[`${room}`].play = false;
-      delete rooms[`${room}`].players.player2;
+      for (let player in rooms[`${room}`].players) {
+        if (rooms[`${room}`].players[`${player}`] === id) {
+          delete rooms[`${room}`].players[`${player}`];
+          break
+        }
+      }
     } else {
       delete rooms[`${room}`];
     }
   }
 }
 
-module.exports = {join, canPlay, playTurn, removePlayer};
+module.exports = {join, canPlay, play, removePlayer};
