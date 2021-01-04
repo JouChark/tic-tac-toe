@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express()
 const http = require('http').createServer(app);
-const favicon = require('express-favicon');
 const path = require('path');
 const io = require('socket.io')(http, {
   cors: {
@@ -12,7 +11,6 @@ const {join, canPlay, play, removePlayer} = require('./game');
 
 let port = process.env.PORT || 5000;
 
-app.use(favicon(__dirname + './client/build/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('/*', (req, res) => {
@@ -46,4 +44,6 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(port);
+http.listen(port, () => {
+  console.log(`Listening on port: ${port}`)
+});

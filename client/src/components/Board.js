@@ -29,9 +29,18 @@ function Board() {
     });
   });
 
-  socket.on('wait', () => {
-    changeText('Waiting for opponent');
-  });
+  useEffect(() => {
+    socket.on('connect_error', (error) => {
+      console.log(error)
+      changeText('Error')
+    })
+  })
+
+  useEffect(() => {
+    socket.on('wait', () => {
+      changeText('Waiting for opponent');
+    });
+  })
 
   function playTurn(e) {
     socket.emit('play', e.target.id);
@@ -64,19 +73,23 @@ function Board() {
     cell.textContent = mark;
   }
 
-  socket.on('winner', winner => {
-    if (socket.id === winner) {
-      changeText('You Won!');
-    } else if (winner === 'draw') {
-      changeText("It's a Draw!");
-    } else if (winner) {
-      changeText('You Lost!');
-    }
-  });
+  useEffect(() => {
+    socket.on('winner', winner => {
+      if (socket.id === winner) {
+        changeText('You Won!');
+      } else if (winner === 'draw') {
+        changeText("It's a Draw!");
+      } else if (winner) {
+        changeText('You Lost!');
+      }
+    });
+  })
   
-  socket.on('playerDisconnected', () => {
-    changeText("Your opponent disconnected");
-  });
+  useEffect(() => {
+    socket.on('playerDisconnected', () => {
+      changeText("Your opponent disconnected");
+    });
+  })
   
   return (
     <React.Fragment>
