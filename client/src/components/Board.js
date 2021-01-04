@@ -24,17 +24,17 @@ function Board() {
   }
 
   useEffect(() => {
-    window.addEventListener('load', () => {
-      socket.emit('enter');
-    });
-  });
-
-  useEffect(() => {
     socket.on('connect_error', (error) => {
-      console.log(error)
-      changeText('Error')
+      console.log(error);
+      changeText('ERROR');
     })
   })
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      socket.emit('enter');
+    })
+  });
 
   useEffect(() => {
     socket.on('wait', () => {
@@ -66,6 +66,7 @@ function Board() {
   function changeText(msg) {
     let p = document.getElementById('result');
     p.textContent = msg;
+    p.style.color = msg === 'ERROR' ? 'red' : 'black'
   }
 
   function changeMark(id, mark) {
@@ -84,9 +85,18 @@ function Board() {
       }
     });
   })
-  
+
   useEffect(() => {
-    socket.on('playerDisconnected', () => {
+    socket.on('disconnect', (reason) => {
+      if (reason === 'io server disconnect') {
+        changeText('Client disconnected');
+        socket.connect();
+      }
+    });
+  })
+
+  useEffect(() => {
+    socket.on('opponentDisconnected', () => {
       changeText("Your opponent disconnected");
     });
   })

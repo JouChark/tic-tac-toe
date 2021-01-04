@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
   socket.on('disconnecting', () => {
     let room = Array.from(socket.rooms)[1];
     removePlayer(room, socket.id);
-    socket.to(room).emit('playerDisconnected');
+    socket.to(room).emit('opponentDisconnected');
   });
 });
 
