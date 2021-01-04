@@ -103,7 +103,7 @@ function Board() {
   
   return (
     <React.Fragment>
-      <p id='result'></p>
+      <p id='result'>Connecting</p>
       <main id='main'>{DisplayBoard()}</main>
     </React.Fragment>
   );
