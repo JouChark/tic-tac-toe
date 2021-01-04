@@ -77,11 +77,11 @@ function Board() {
   useEffect(() => {
     socket.on('winner', winner => {
       if (socket.id === winner) {
-        changeText('You Won!');
+        changeText('YOU WIN!');
       } else if (winner === 'draw') {
         changeText("It's a Draw!");
       } else if (winner) {
-        changeText('You Lost!');
+        changeText('YOU LOSE!');
       }
     });
   })
