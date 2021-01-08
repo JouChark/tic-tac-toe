@@ -1,6 +1,18 @@
 const rooms = {};
 let n = 0;
 
+function getInitialPlayer(room) {
+  let randNum = Math.floor((Math.random() * 2) + 1);
+
+  console.log(randNum)
+
+  if (randNum === 1) {
+    return rooms[`${room}`].players.player1;
+  } else {
+    return rooms[`${room}`].players.player2;
+  }
+}
+
 function join(id) {
   let room = `room${n}`;
 
@@ -13,7 +25,7 @@ function join(id) {
     rooms[`${room}`].play = true;
     rooms[`${room}`].turn = 0;
     n += 1;
-    return [room, 'update', rooms[`${room}`].players.player1];
+    return [room, 'update', getInitialPlayer(room)];
   }
 }
 
