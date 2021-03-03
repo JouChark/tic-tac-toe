@@ -11,6 +11,6 @@ It can be played [here](https://tic-tac-toe-023.herokuapp.com/).
 * CSS
 
 ## About
-The objective of this project was mainly to learn React.js.
+The objective of this project was mainly to learn React.
 
 Furthermore, I also learned how two clients communicate with each other through Socket.io. And how to maintain the app logic on the server-side and send the correct response to each client.
