@@ -1,5 +1,5 @@
 # Tic Tac Toe
-A two player online game of tic tac toe..
+A two player online game of tic tac toe.
 
 ## Live Demo
 It can be played [here](https://tic-tac-toe-023.herokuapp.com/).
