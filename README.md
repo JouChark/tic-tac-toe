@@ -5,8 +5,8 @@ A two player online game of tic tac toe.
 It can be played [here](https://tic-tac-toe-023.herokuapp.com/).
 
 ## Built with
-* JavasCript
 * Socket.io
+* Express
 * React
 * CSS
 
