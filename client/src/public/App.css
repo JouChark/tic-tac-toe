@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  text-align: center;
+}
+
+/*** HEADER ***/
+header {
+  background-color: #252525;
+  color: #fff;
+  padding: 35px;
+}
+
+#result {
+  min-height: 30px;
+  font-size: 1.5em;
+  margin: 25px 0;
+}
+
+/*** MAIN (GAME BOARD) ***/
+#main {
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  font-family: sans-serif;
+  line-height: 98px;
+  user-select: none;
+  margin: 5% auto;
+  font-size: 3em;
+  display: grid;
+  height: 300px;
+  width: 300px;
+}
+
+.cell:nth-child(-n+6) {
+  border-bottom: 2px solid black;
+}
+
+.cell:nth-child(3n + 1), .cell:nth-child(3n-1) {
+  border-right: 2px solid black;
+}

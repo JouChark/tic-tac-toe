@@ -1,8 +1,8 @@
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import io from 'socket.io-client';
 
 function Board() {
-  const socket = io('https://tic-tac-toe-023.herokuapp.com/');
+  const socket = io();
 
   const DisplayBoard = () => {
     const cell = [];
@@ -26,21 +26,21 @@ function Board() {
   useEffect(() => {
     socket.on('connect_error', (error) => {
       console.log(error);
-      changeText('ERROR');
+      changeText('Sorry! An error occurred');
     })
-  })
+  }, [socket])
 
   useEffect(() => {
     socket.on('connect', () => {
       socket.emit('enter');
     })
-  });
+  }, [socket]);
 
   useEffect(() => {
     socket.on('wait', () => {
       changeText('Waiting for opponent');
     });
-  })
+  }, [socket])
 
   function playTurn(e) {
     socket.emit('play', e.target.id);
@@ -53,20 +53,19 @@ function Board() {
         changeMark(id, mark);
       }
     });
-  });
 
-  function playerTurn(playerId, turnId) {
-    if (turnId === playerId) {
-      changeText('Your turn');
-    } else {
-      changeText("Opponent's turn");
+    function playerTurn(playerId, turnId) {
+      if (turnId === playerId) {
+        changeText('Your turn');
+      } else {
+        changeText("Opponent's turn");
+      }
     }
-  }
+  }, [socket]);
 
   function changeText(msg) {
     let p = document.getElementById('result');
     p.textContent = msg;
-    p.style.color = msg === 'ERROR' ? 'red' : 'black'
   }
 
   function changeMark(id, mark) {
@@ -84,7 +83,7 @@ function Board() {
         changeText('YOU LOSE!');
       }
     });
-  })
+  }, [socket])
 
   useEffect(() => {
     socket.on('disconnect', (reason) => {
@@ -93,14 +92,14 @@ function Board() {
         socket.connect();
       }
     });
-  })
+  }, [socket])
 
   useEffect(() => {
     socket.on('opponentDisconnected', () => {
       changeText("Your opponent disconnected");
     });
-  })
-  
+  }, [socket])
+
   return (
     <React.Fragment>
       <p id='result'>Connecting...</p>

@@ -1,13 +1,9 @@
+const {join, canPlay, play, finishGame} = require('./game');
 const express = require('express');
 const app = express()
 const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 const path = require('path');
-const io = require('socket.io')(http, {
-  cors: {
-    origin: 'http://localhost:3000',
-  }
-});
-const {join, canPlay, play, removePlayer} = require('./game');
 
 let port = process.env.PORT || 5000;
 
@@ -28,7 +24,7 @@ io.on('connection', (socket) => {
   socket.on('play', (index) => {
     let room = Array.from(socket.rooms)[1];
     
-    if (canPlay(room, socket.id)) {
+    if (canPlay(room, socket.id, index)) {
       let [turnId, mark, winner] = play(room, index);
       io.to(room).emit('update', turnId, mark, index);
       if (winner) {
@@ -39,11 +35,11 @@ io.on('connection', (socket) => {
 
   socket.on('disconnecting', () => {
     let room = Array.from(socket.rooms)[1];
-    removePlayer(room, socket.id);
     socket.to(room).emit('opponentDisconnected');
+    finishGame(room);
   });
 });
 
 http.listen(port, () => {
-  console.log(`Listening on port: ${port}`)
+  console.log(`Listening on: http://localhost:${port}/`)
 });

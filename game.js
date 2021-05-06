@@ -4,8 +4,6 @@ let n = 0;
 function getInitialPlayer(room) {
   let randNum = Math.floor((Math.random() * 2) + 1);
 
-  console.log(randNum)
-
   if (randNum === 1) {
     return rooms[`${room}`].players.player1;
   } else {
@@ -29,10 +27,15 @@ function join(id) {
   }
 }
 
-function canPlay(socketRoom, id) {
+function canPlay(socketRoom, id, index) {
   let room = rooms[`${socketRoom}`];
   let player = playerTurn(room);
-  if (player === id && room.play) {return true};
+
+  if (player === id && room.play && !room.board[index]) {
+    return true
+  };
+
+  return false;
 }
 
 function play(socketRoom, index) {
@@ -52,9 +55,9 @@ function play(socketRoom, index) {
 function playerTurn(room) {
   if (room.turn % 2 === 0) {
     return room.players.player1;
-  } else {
-    return room.players.player2;
-  }
+  } 
+  
+  return room.players.player2;
 }
 
 function getWinner(socketRoom) {
@@ -71,7 +74,7 @@ function getWinner(socketRoom) {
 
   let board = rooms[`${socketRoom}`].board;
   let room = rooms[`${socketRoom}`];
-  let winner = null;
+  let winner = false;
 
   winCondition.forEach((arr) => {
     let [a, b, c] = arr;
@@ -84,25 +87,16 @@ function getWinner(socketRoom) {
     } 
   })
 
-  if (winner) {room.play = false};
+  if (winner) room.play = false;
 
   return winner;
 }
 
-function removePlayer(room, id) {
+function finishGame(room) {
   if (rooms[`${room}`]) {
-    if (rooms[`${room}`].players.length === 2) {
-      rooms[`${room}`].play = false;
-      for (let player in rooms[`${room}`].players) {
-        if (rooms[`${room}`].players[`${player}`] === id) {
-          delete rooms[`${room}`].players[`${player}`];
-          break
-        }
-      }
-    } else {
-      delete rooms[`${room}`];
-    }
+    rooms[`${room}`].play = false;
+    delete rooms[`${room}`];
   }
 }
 
-module.exports = {join, canPlay, play, removePlayer};
+module.exports = {join, canPlay, play, finishGame};
